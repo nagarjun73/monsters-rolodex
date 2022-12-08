@@ -1,6 +1,6 @@
 import { Component } from "react";
 
-import logo from "./logo.svg";
+import CardList from "./components/card-list/card-list.component";
 import "./App.css";
 
 class App extends Component {
@@ -8,31 +8,46 @@ class App extends Component {
     super();
 
     this.state = {
-      name: { firstName: "Nagarjun", lastName: "Gouda" },
-      company: "Pico",
+      monsters: [],
+      searchField: " ",
     };
   }
 
+  componentDidMount() {
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then((res) => res.json())
+      .then((users) =>
+        this.setState(() => {
+          return { monsters: users };
+        })
+      );
+  }
+
+  onSearchChange = (event) => {
+    const searchField = event.target.value.toLowerCase();
+
+    this.setState(() => {
+      return { searchField };
+    });
+  };
+
   render() {
+    const { searchField, monsters } = this.state;
+    const { onSearchChange } = this;
+
+    const filteredMonsters = monsters.filter((monst) => {
+      return monst.name.toLowerCase().includes(searchField);
+    });
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Hello {this.state.name.firstName} {this.state.name.lastName}. I work
-            at {this.state.company}
-          </p>
-          <button
-            onClick={() => {
-              this.setState({
-                name: { firstName: "Nagini", lastName: "Goudti" },
-              });
-              console.log(this.state);
-            }}
-          >
-            Change Name
-          </button>
-        </header>
+        <input
+          className="search-box"
+          type="search"
+          placeholder="seaech mosnsters"
+          onChange={onSearchChange}
+        />
+
+        <CardList monsters={filteredMonsters} />
       </div>
     );
   }
