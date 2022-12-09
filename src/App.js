@@ -24,8 +24,6 @@ const App = () => {
     });
 
     setFilteredMonsters(newFilteredMonsters);
-
-    console.log("fire");
   }, [monsters, searchField]);
 
   const onSearchChange = (event) => {
